@@ -14,11 +14,11 @@ import java.math.BigDecimal;
  *景点表
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "attraction")
+@Builder(toBuilder = true)
 public class Attraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键（MySQL/Auto）
@@ -50,16 +50,15 @@ public class Attraction {
     @Column(name = "attraction_cover")
     private String attractionCover;//景点封面图
 
-    @JsonProperty("officalGuide")
-    @Column(name = "official_guide")
-    private String officalGuide;//景点官方攻略
+
+    private String officialGuide;//景点官方攻略
 
 
-    private enum attraction_status{营业,非营业时间,歇业};
+
 
     @JsonProperty("attractionStatus")
     @Column(name = "attraction_status")
-    private attraction_status attractionStatus;//景点状态
+    private Integer attractionStatus;//景点状态
 
     @JsonProperty("businessHours")
     @Column(name = "business_hours")
@@ -67,7 +66,7 @@ public class Attraction {
 
     @JsonProperty("pageViews")
     @Column(name="page_views")
-    private int pageViews;//景点页面浏览量
+    private Integer pageViews;//景点页面浏览量
 
     @JsonProperty("ticketPrice")
     @Column(name = "ticket_price")

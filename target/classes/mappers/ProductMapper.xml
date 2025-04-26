@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travelsystem.travel.mapper.ProductMapper">
+
+    <!-- 增强型结果映射（处理枚举序数映射） -->
+    <resultMap id="EnhancedResultMap" type="org.travelsystem.travel.entity.ProductInformation">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+
+        <!-- 修正字段类型映射 -->
+        <result column="cover_image" property="coverImage" jdbcType="VARCHAR"/>
+        <result column="product_description" property="productDescription" jdbcType="VARCHAR"/>
+        <result column="stock" property="stock" jdbcType="BIGINT"/>
+
+        <!-- 枚举字段使用序数映射 -->
+        <result column="product_type" property="productType"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+                jdbcType="INTEGER"/>
+        <result column="status" property="status"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+                jdbcType="INTEGER"/>
+
+        <!-- 精确数值类型处理 -->
+        <result column="price" property="price" jdbcType="DECIMAL"
+                typeHandler="org.apache.ibatis.type.BigDecimalTypeHandler"/>
+        <result column="discount" property="discount" jdbcType="DECIMAL"
+                typeHandler="org.apache.ibatis.type.BigDecimalTypeHandler"/>
+
+        <!-- 时间类型处理 -->
+        <result column="available_purchase_time" property="availablePurchaseTime"
+                jdbcType="TIMESTAMP"/>
+        <result column="product_code" property="productCode" jdbcType="VARCHAR"/>
+        <result column="online_time" property="onlineTime" jdbcType="TIMESTAMP"/>
+        <result column="offline_time" property="offlineTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 增强列定义 -->
+    <sql id="Enhanced_Column_List">
+        id, cover_image, product_description, stock, product_type,
+        price, discount, available_purchase_time, status,
+        product_code, online_time, offline_time
+    </sql>
+
+    <!-- 智能插入（自动处理空值） -->
+    <insert id="insertSelective" parameterType="org.travelsystem.travel.entity.ProductInformation"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coverImage != null">cover_image,</if>
+            <if test="productDescription != null">product_description,</if>
+            <if test="stock != null">stock,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="price != null">price,</if>
+            <if test="discount != null">discount,</if>
+            <if test="availablePurchaseTime != null">available_purchase_time,</if>
+            <if test="status != null">status,</if>
+            <if test="productCode != null">product_code,</if>
+            <if test="onlineTime != null">online_time,</if>
+            <if test="offlineTime != null">offline_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coverImage != null">#{coverImage,jdbcType=VARCHAR},</if>
+            <if test="productDescription != null">#{productDescription,jdbcType=VARCHAR},</if>
+            <if test="stock != null">#{stock,jdbcType=BIGINT},</if>
+            <if test="productType != null">#{productType,jdbcType=INTEGER,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},</if>
+            <if test="price != null">#{price,jdbcType=DECIMAL},</if>
+            <if test="discount != null">#{discount,jdbcType=DECIMAL},</if>
+            <if test="availablePurchaseTime != null">#{availablePurchaseTime,jdbcType=TIMESTAMP},</if>
+            <if test="status != null">#{status,jdbcType=INTEGER,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},</if>
+            <if test="productCode != null">#{productCode,jdbcType=VARCHAR},</if>
+            <if test="onlineTime != null">#{onlineTime,jdbcType=TIMESTAMP},</if>
+            <if test="offlineTime != null">#{offlineTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+    <!-- 增强动态更新 -->
+    <update id="updateByPrimaryKeySelective" parameterType="org.travelsystem.travel.entity.ProductInformation">
+        UPDATE product_information
+        <set>
+            <if test="coverImage != null">cover_image = #{coverImage,jdbcType=VARCHAR},</if>
+            <if test="productDescription != null">product_description = #{productDescription,jdbcType=VARCHAR},</if>
+            <if test="stock != null">stock = #{stock,jdbcType=BIGINT},</if>
+            <if test="productType != null">product_type = #{productType,jdbcType=INTEGER,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},</if>
+            <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
+            <if test="discount != null">discount = #{discount,jdbcType=DECIMAL},</if>
+            <if test="availablePurchaseTime != null">available_purchase_time = #{availablePurchaseTime,jdbcType=TIMESTAMP},</if>
+            <if test="status != null">status = #{status,jdbcType=INTEGER,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},</if>
+            <if test="productCode != null">product_code = #{productCode,jdbcType=VARCHAR},</if>
+            <if test="onlineTime != null">online_time = #{onlineTime,jdbcType=TIMESTAMP},</if>
+            <if test="offlineTime != null">offline_time = #{offlineTime,jdbcType=TIMESTAMP},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!-- 高级查询功能 -->
+    <select id="selectByCondition" resultMap="EnhancedResultMap" parameterType="map">
+        SELECT <include refid="Enhanced_Column_List"/>
+        FROM product_information
+        <where>
+            <if test="productType != null">
+                AND product_type = #{productType,jdbcType=INTEGER}
+            </if>
+            <if test="minPrice != null">
+                AND price >= #{minPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="statusList != null and statusList.size() > 0">
+                AND status IN
+                <foreach item="status" collection="statusList" open="(" separator="," close=")">
+                    #{status,jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <if test="currentTime != null">
+                AND online_time &lt;= #{currentTime,jdbcType=TIMESTAMP}
+                AND offline_time >= #{currentTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sortField == 'price'">price ${sortOrder}</when>
+            <when test="sortField == 'onlineTime'">online_time ${sortOrder}</when>
+            <otherwise>id DESC</otherwise>
+        </choose>
+    </select>
+
+    <!-- 批量更新库存 -->
+    <update id="batchUpdateStock">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE product_information
+            SET stock = stock - #{item.quantity}
+            WHERE id = #{item.productId}
+            AND stock >= #{item.quantity}
+        </foreach>
+    </update>
+</mapper>

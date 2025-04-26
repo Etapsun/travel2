@@ -1,13 +1,14 @@
 package org.travelsystem.travel.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.travelsystem.travel.DTO.PhoneRegisterDTO;
 import org.travelsystem.travel.DTO.UserInfoDTO;
 import org.travelsystem.travel.entity.User1;
 
 // User1Service.java (接口)
 public interface User1Service {
     // 手机号注册
-    User1 registerByPhone(String phone, String password);
+    User1 registerByPhone(PhoneRegisterDTO dto);
 
     @Transactional(rollbackFor = Exception.class)
     User1 loginByPhone(String phone, String password);
@@ -29,4 +30,6 @@ public interface User1Service {
 
     // 绑定手机号（微信用户后续绑定）
     void bindPhone(Long userId, String phone, String password);
+
+    void deleteUser(Long userId);
 }

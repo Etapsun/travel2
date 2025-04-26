@@ -29,4 +29,5 @@ public class User1 {
     private LocalDate birthday;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private String email;
 }
