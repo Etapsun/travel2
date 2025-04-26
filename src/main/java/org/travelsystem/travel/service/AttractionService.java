@@ -14,4 +14,5 @@ public interface AttractionService {
     void deleteAttraction(Long id);
     void incrementPageViews(Long id);
 
+    List<AttractionDTO> getAllAttractions();
 }

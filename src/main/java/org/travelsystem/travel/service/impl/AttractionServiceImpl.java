@@ -164,7 +164,6 @@ public class AttractionServiceImpl implements AttractionService {
      * 增加景点的页面浏览次数
      * @param id 景点ID
      */
-
     @Override
     @Transactional
     public void incrementPageViews(Long id) {
@@ -190,6 +189,11 @@ public class AttractionServiceImpl implements AttractionService {
                 .pageViews(attraction.getPageViews())
                 .discount(attraction.getDiscount()!= null? attraction.getDiscount() : BigDecimal.ZERO)
                 .build();
+    }
+
+    @Override
+    public List<AttractionDTO> getAllAttractions() {
+        return attractionMapper.selectAll();
     }
 
     // 将DTO转换为景点实体

@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.travelsystem.travel.DTO.AttractionDTO;
 import org.travelsystem.travel.entity.Attraction;
 
 import java.math.BigDecimal;
@@ -27,4 +28,5 @@ public interface AttractionMapper {
     int insert(Attraction attraction);
     int update(Attraction attraction);
     int deleteById(Long id);
+    List<AttractionDTO> selectAll();
 }

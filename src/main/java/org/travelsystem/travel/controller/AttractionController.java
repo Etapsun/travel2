@@ -170,6 +170,10 @@ public class AttractionController {
         // 返回200 OK响应
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/getAllAttractions")
+    public ResponseEntity<List<AttractionDTO>> getAllAttractions() {
+        return ResponseEntity.ok(attractionService.getAllAttractions());
+    }
 }
 
 

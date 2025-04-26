@@ -40,10 +40,17 @@
         WHERE attraction_id = #{attractionId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectAll" resultMap="BaseResultMap">
-            SELECT *
-            FROM attraction
+    <select id="selectAll" resultType="org.travelsystem.travel.DTO.AttractionDTO">
+        SELECT
+        attraction_id as attractionId,
+        attraction_name as attractionName,
+        attraction_rating as attractionRating,
+        ticket_price as ticketPrice,
+        attraction_phone as attractionPhone,
+        page_views as pageViews
+        FROM attraction
     </select>
+
 
     <delete id="deleteById" parameterType="org.travelsystem.travel.entity.Attraction">
         DELETE FROM attraction
