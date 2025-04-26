@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.travelsystem.travel.mapper.AttractionMapper">
+    <resultMap id="attractionResultMap" type="org.travelsystem.travel.entity.Attraction">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="location" column="location"/>
+        <result property="openingHours" column="opening_hours"/>
+        <result property="rating" column="rating"/>
+    </resultMap>
+
+    <insert id="insertAttraction" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO attractions (name, description, location, opening_hours, rating)
+        VALUES (#{name}, #{description}, #{location}, #{openingHours}, #{rating})
+    </insert>
+
+    <delete id="deleteAttractionById">
+        DELETE FROM attractions WHERE id = #{id}
+    </delete>
+
+    <update id="updateAttraction">
+        UPDATE attractions SET
+                               name = #{name},
+                               description = #{description},
+                               location = #{location},
+                               opening_hours = #{openingHours},
+                               rating = #{rating}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAttractionById" resultMap="attractionResultMap">
+        SELECT * FROM attractions WHERE id = #{id}
+    </select>
+
+    <select id="selectAllAttractions" resultMap="attractionResultMap">
+        SELECT * FROM attractions
+    </select>
+</mapper>

@@ -1,0 +1,308 @@
+package org.travelsystem.travel.service.impl;
+
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.travelsystem.travel.DTO.UserInfoDTO;
+import org.travelsystem.travel.entity.User1;
+import org.travelsystem.travel.exception.BusinessException;
+import org.travelsystem.travel.mapper.User1Mapper;
+import org.travelsystem.travel.service.User1Service;
+import org.travelsystem.travel.utils.WechatUtil;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+// UserServiceImpl.java
+@Service
+@RequiredArgsConstructor
+@Slf4j  // 自动生成 private static final Logger log = ...
+public class User1ServiceImpl implements User1Service {
+    private final User1Mapper userMapper;
+    private final WechatUtil wechatUtil;
+
+    /**
+     * 手机用户注册
+     * @param phone    手机号
+     * @param password 密码
+     * @return 注册成功的用户对象
+     */
+    @Override// 标记该方法为事务性方法，当发生Exception时回滚事务
+    @Transactional(rollbackFor = Exception.class)
+    public User1 registerByPhone(String phone, String password) {
+        if (userMapper == null) {
+            throw new BusinessException("用户数据访问层初始化失败");
+        }
+
+        // 1. 校验手机号格式
+        // 使用正则表达式检查手机号是否符合规范，必须是1开头，第二位是3-9，后面跟着9位数字
+        if (!Pattern.matches("^1[3-9]\\d{9}$", phone)) {
+        // 如果手机号格式不正确，抛出业务异常
+            throw new BusinessException("手机号格式不正确");
+        }
+        // 2. 校验手机号唯一性
+    // 通过userMapper查询数据库中是否已存在该手机号的用户
+        User1 existingUser = userMapper.selectByPhone(phone);
+        if (existingUser != null) {
+        // 如果已存在该手机号的用户，抛出业务异常
+            throw new BusinessException("该手机号已注册");
+        }
+        // 3. 校验密码复杂度（示例：至少6位包含字母和数字）
+    // 使用正则表达式检查密码是否至少包含一个字母和一个数字，且长度至少为6位
+        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d).{6,}$")) {
+        // 如果密码复杂度不符合要求，抛出业务异常
+            throw new BusinessException("密码需包含字母和数字且至少6位");
+        }
+        // 5. 构建用户对象
+        // 创建一个新的User1对象，并设置手机号、加密后的密码和创建时间
+        User1 newUser = new User1();
+        newUser.setPhone(phone);
+        newUser.setPassword(password);
+        newUser.setCreateTime(LocalDateTime.now());
+        newUser.setUpdateTime(LocalDateTime.now()); // 添加更新时间
+        try {
+            // 只执行一次insert操作
+            int result = userMapper.insert(newUser);
+            if (result <= 0) {
+                throw new BusinessException("用户注册失败");
+            }
+
+            log.info("手机用户注册成功, ID: {}, 手机号: {}", newUser.getId(), phone);
+            return newUser;
+        } catch (DuplicateKeyException e) {
+            log.error("手机号重复注册: {}", phone);
+            throw new BusinessException("该手机号已被注册");
+        }
+    }
+
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public User1 loginByPhone(String phone, String password) {
+        // 1. 校验手机号格式
+        if (!Pattern.matches("^1[3-9]\\d{9}$", phone)) {
+            throw new BusinessException("手机号格式不正确");
+        }
+
+        // 2. 查询用户是否存在
+        User1 user = userMapper.selectByPhone(phone);
+        if (user == null) {
+            throw new BusinessException("该手机号未注册");
+        }
+
+        // 3. 校验密码
+        if (!password.equals(user.getPassword())) {
+            throw new BusinessException("密码错误");
+        }
+
+        return user;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public User1 wechatScanLogin(String code) {
+        // 1. 校验code有效性
+        if (StringUtils.isBlank(code)) {
+            throw new BusinessException("微信code不能为空");
+        }
+
+        // 2. 调用微信API获取openid
+        Map<String, Object> wechatResponse;
+        try {
+            wechatResponse = wechatUtil.getWechatSession(code);
+        } catch (Exception e) {
+            log.error("微信API调用失败", e);
+            throw new BusinessException("微信登录服务暂不可用");
+        }
+
+        // 3. 解析openid
+        String openid = (String) wechatResponse.get("openid");
+        if (StringUtils.isBlank(openid)) {
+            String errmsg = (String) wechatResponse.get("errmsg");
+            throw new BusinessException("微信登录失败: " + errmsg);
+        }
+
+        // 4. 检查是否已注册
+        User1 user = userMapper.selectByWechatOpenid(openid);
+        if (user == null) {
+            // 新用户自动注册
+            user = new User1();
+            user.setWechatOpenid(openid);
+            user.setCreateTime(LocalDateTime.now());
+            user.setUpdateTime(LocalDateTime.now());
+
+            userMapper.insert(user);
+            log.info("微信新用户注册, OpenID: {}", openid);
+        }
+
+        return user;
+    }
+
+    /**
+     * 微信用户登录
+     * @param code 微信登录凭证
+     * @return 登录成功的用户对象
+     * @param code
+     * @return
+     */
+    @Override// 标记该方法为事务性方法，如果抛出Exception及其子类异常，事务将回滚
+    @Transactional(rollbackFor = Exception.class)
+    public User1 wechatLogin(String code) {
+        // 1. 校验code有效性
+    // 检查传入的微信code是否为空或仅包含空白字符
+        if (StringUtils.isBlank(code)) {
+        // 如果code为空，抛出业务异常
+            throw new BusinessException("微信code不能为空");
+        }
+
+        // 2. 调用微信API获取openid
+    // 声明一个Map用于存储微信API返回的响应数据
+        Map<String, Object> wechatResponse;
+        try {
+        // 调用wechatUtil工具类的getWechatSession方法获取微信会话信息
+            wechatResponse = wechatUtil.getWechatSession(code);
+        } catch (Exception e) {
+        // 如果调用微信API时发生异常，记录错误日志并抛出业务异常
+            log.error("微信API调用失败", e);
+            throw new BusinessException("微信登录服务暂不可用");
+        }
+
+        // 3. 解析openid
+    // 从微信响应中获取openid
+        String openid = (String) wechatResponse.get("openid");
+    // 检查openid是否为空或仅包含空白字符
+        if (StringUtils.isBlank(openid)) {
+        // 如果openid为空，从响应中获取错误信息
+            String errmsg = (String) wechatResponse.get("errmsg");
+        // 抛出业务异常，包含错误信息
+            throw new BusinessException("微信登录失败: " + errmsg);
+        }
+
+        // 4. 检查是否已注册
+    // 根据openid查询用户信息
+        User1 user = userMapper.selectByWechatOpenid(openid);
+    // 如果用户不存在
+        if (user == null) {
+            // 5. 新用户自动注册
+        // 创建一个新的User1对象
+            user = new User1();
+        // 设置用户的微信openid
+            user.setWechatOpenid(openid);
+        // 设置用户的创建时间
+            user.setCreateTime(LocalDateTime.now());
+
+            // 6. 可选：获取微信用户信息（需要用户授权）
+        // 注释掉的代码：获取微信用户信息（需要用户授权）
+            // Map<String, String> userInfo = wechatUtil.getUserInfo(accessToken, openid);
+        // 设置用户的昵称和头像
+            // user.setNickname(userInfo.get("nickname"));
+            // user.setAvatar(userInfo.get("headimgurl"));
+
+        // 将新用户信息插入数据库
+            userMapper.insert(user);
+        // 记录新用户注册的日志
+            log.info("微信新用户注册, OpenID: {}", openid);
+        }
+
+    // 返回用户信息
+        return user;
+    }
+
+
+    /**
+     * 更新用户信息
+     * @param userId 用户ID
+     * @param dto    用户信息DTO
+     */
+    @Override
+// 标记该方法为事务性方法，如果发生Exception及其子类异常，将回滚事务
+    @Transactional(rollbackFor = Exception.class)
+    public void updateUserInfo(Long userId, UserInfoDTO dto) {
+        // 1. 校验用户是否存在
+    // 通过用户ID从数据库中查询用户信息
+        User1   user = userMapper.selectById(userId);
+    // 如果用户不存在，抛出业务异常
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+
+        // 2. 更新基本信息
+    // 如果传入的昵称不为空，则更新用户的昵称
+        if (StringUtils.isNotBlank(dto.getNickname())) {
+            user.setNickname(dto.getNickname());
+        }
+    // 如果传入的头像URL不为空，则更新用户的头像
+        if (StringUtils.isNotBlank(dto.getAvatar())) {
+            user.setAvatar(dto.getAvatar());
+        }
+    // 如果传入的性别不为空且在有效范围内（0到2），则更新用户的性别
+        if (dto.getGender() != null && (dto.getGender() >= 0 && dto.getGender() <= 2)) {
+            user.setGender(dto.getGender());
+        }
+    // 如果传入的生日不为空且在当前日期之前，则更新用户的生日
+        if (dto.getBirthday() != null && dto.getBirthday().isBefore(LocalDate.now())) {
+            user.setBirthday(dto.getBirthday());
+        }
+
+        // 3. 设置更新时间
+    // 将当前时间设置为用户的最后更新时间
+        user.setUpdateTime(LocalDateTime.now());
+
+        // 4. 执行更新
+    // 调用用户Mapper的更新方法，将更新后的用户信息保存到数据库
+        int affectedRows = userMapper.update(user);
+    // 如果更新影响的行数为0，说明更新失败，抛出业务异常
+        if (affectedRows == 0) {
+            throw new BusinessException("用户信息更新失败");
+        }
+
+    // 记录日志，表示用户信息更新成功
+        log.info("用户信息更新成功, ID: {}", userId);
+    }
+
+    /**
+     * 获取用户详细信息
+     * @param userId 用户ID
+     * @return 用户详细信息
+     */
+    @Override// 重写注解，表示该方法重写了父类或接口中的方法
+    public User1 getUserDetails(Long userId) {
+
+        return userMapper.selectById(userId);
+    // 调用userMapper对象的selectById方法，传入userId参数，返回查询到的User1对象
+    }
+
+    /**
+     * 绑定手机号
+     * @param userId   用户ID
+     * @param phone    手机号
+     * @param password 密码
+     */
+    @Override// 标记该方法为重写父类或接口中的方法
+    @Transactional// 标记该方法为事务性方法，确保方法中的数据库操作要么全部成功，要么全部回滚
+    public void bindPhone(Long userId, String phone, String password) {
+    // 方法签名，接收用户ID、手机号和密码作为参数
+        User1 user = userMapper.selectById(userId);
+    // 通过用户ID从数据库中查询用户信息
+        if (user.getPhone() != null) {
+        // 如果用户已经绑定了手机号，抛出运行时异常
+            throw new RuntimeException("用户已绑定手机号");
+        }
+        if (userMapper.selectByPhone(phone) != null) {
+        // 如果手机号已经被其他用户占用，抛出运行时异常
+            throw new RuntimeException("手机号已被占用");
+        }
+        user.setPhone(phone);
+    // 将手机号设置到用户对象中
+        user.setPassword(password);
+    // 将密码进行加密后设置到用户对象中
+        userMapper.update(user);
+    // 更新用户信息到数据库
+    }
+}

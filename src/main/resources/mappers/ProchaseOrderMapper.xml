@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.travelsystem.travel.mapper.PurchaseOrderMapper">
+
+
+    <!-- 自定义枚举类型处理器（可选） -->
+    <resultMap id="PurchaseOrderResultMap" type="org.travelsystem.travel.entity.PurchaseOrder">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productType" column="product_type"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="productName" column="product_name"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="contactNumber" column="contact_number"/>
+        <result property="idCardNumber" column="id_card_number"/>
+        <result property="paymentAmount" column="payment_amount"/>
+        <result property="paymentStatus" column="payment_status"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="paymentTime" column="payment_time"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="couponBool" column="coupon_bool"/>
+        <result property="couponUsed" column="coupon_used"/>
+        <result property="discountApplied" column="discount_applied"/>
+    </resultMap>
+
+    <!-- 插入订单 -->
+    <insert id="insert" parameterType="org.travelsystem.travel.entity.PurchaseOrder"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO purchase_order (
+            user_id,
+            product_id,
+            product_type,
+            product_name,
+            contact_person,
+            contact_number,
+            id_card_number,
+            payment_amount,
+            payment_status,
+            payment_time,
+            creation_time,
+            coupon_bool,
+            coupon_used,
+            discount_applied
+        ) VALUES (
+                     #{userId},
+                     #{productId},
+                     #{productType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                     #{productName},
+                     #{contactPerson},
+                     #{contactNumber},
+                     #{idCardNumber},
+                     #{paymentAmount},
+                     #{paymentStatus, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                     #{paymentTime},
+                     #{creationTime},
+                     #{couponBool},
+                     #{couponUsed},
+                     #{discountApplied}
+                 )
+    </insert>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="Long" resultMap="PurchaseOrderResultMap">
+        SELECT * FROM purchase_order WHERE id = #{id}
+    </select>
+
+    <!-- 更新支付状态 -->
+    <update id="updatePaymentStatus">
+        UPDATE purchase_order
+        SET
+            payment_status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            payment_time = #{paymentTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 补充其他SQL操作 -->
+</mapper>

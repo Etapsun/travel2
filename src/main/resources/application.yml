@@ -1,0 +1,29 @@
+server:
+  port: 1920
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/database_analysis_and_design?useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password: 123456
+debug: true
+wechat:
+  appid: wx8724a8e884f1d63e
+  secret: e7913ed68d23112a3cf73c739de70633
+jwt:
+  secret: your-secret-key-12345  # 添加JWT签名密钥
+  expiration: 86400000          # Token有效期（24小时）
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+
+mybatis:
+  mapper-locations: classpath*:mappers/*.xml
+  type-aliases-package: org.travelsystem.travel.entity
+#测试，无实例1
