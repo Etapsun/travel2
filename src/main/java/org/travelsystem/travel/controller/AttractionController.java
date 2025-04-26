@@ -26,9 +26,12 @@ public class AttractionController {
     // 使用@RequiredArgsConstructor注解自动生成一个包含所有final字段的构造函数
     private final AttractionService attractionService;
 
-    // 处理GET请求，根据ID获取景点信息
 
-
+    /**
+     * 根据ID获取景点信息
+     * @param id 景点ID
+     * @return 景点信息
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getAttractionById(@PathVariable Long id) {
         try {
@@ -44,7 +47,11 @@ public class AttractionController {
         }
     }
 
-    // 处理GET请求，根据名称搜索景点
+    /**
+     * 根据名称获取景点信息
+     * @param name 景点名称
+     * @return 景点信息
+     */
     @GetMapping("/search")
     public ResponseEntity<List<AttractionDTO>> searchAttractionsByName(
             @RequestParam String name) {
@@ -52,7 +59,12 @@ public class AttractionController {
         return ResponseEntity.ok(attractionService.searchAttractionsByName(name));
     }
 
-    // 处理GET请求，根据评分范围获取景点
+    /**
+     * 根据评分范围获取景点信息
+     * @param min 最小评分
+     * @param max 最大评分
+     * @return 景点信息
+     */
     @GetMapping("/rating")
     public ResponseEntity<?> getAttractionsByRatingRange(
             @RequestParam @NotNull(message = "min不能为空") @DecimalMin(value = "0.0", message = "评分最小值不能小于0") BigDecimal min,
@@ -78,7 +90,9 @@ public class AttractionController {
         }
     }
 
-    // 处理POST请求，创建新的景点
+    /**
+     * 创建景点信息
+     */
     @PostMapping("/createAttraction")
     public ResponseEntity<AttractionDTO> createAttractionByParams(
             @RequestParam String attractionName,
@@ -170,10 +184,28 @@ public class AttractionController {
         // 返回200 OK响应
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 获取所有景点信息
+     * @return
+     */
     @GetMapping("/getAllAttractions")
     public ResponseEntity<List<AttractionDTO>> getAllAttractions() {
         return ResponseEntity.ok(attractionService.getAllAttractions());
     }
+
+    /**
+     * 获取所有景点信息，包含详细信息，与上面不同的是这个是全部的信息，运用于详细页面
+     * @return
+     */
+    @GetMapping("/getAllAttractionDetailed")
+    public ResponseEntity<List<AttractionDTO>> getAllAttractionDetailed() {
+        return ResponseEntity.ok(attractionService.getAllAttractionDetailed());
+    }
+
+
+
+
 }
 
 

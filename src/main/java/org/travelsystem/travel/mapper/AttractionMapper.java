@@ -29,4 +29,6 @@ public interface AttractionMapper {
     int update(Attraction attraction);
     int deleteById(Long id);
     List<AttractionDTO> selectAll();
+
+    List<AttractionDTO> selectAllAttractionDetailed();
 }

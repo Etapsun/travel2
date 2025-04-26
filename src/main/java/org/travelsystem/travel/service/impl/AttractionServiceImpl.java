@@ -196,6 +196,11 @@ public class AttractionServiceImpl implements AttractionService {
         return attractionMapper.selectAll();
     }
 
+    @Override
+    public List<AttractionDTO> getAllAttractionDetailed() {
+        return attractionMapper.selectAllAttractionDetailed();
+    }
+
     // 将DTO转换为景点实体
     private Attraction convertToEntity(AttractionDTO dto) {
         return Attraction.builder()

@@ -15,4 +15,7 @@ public interface AttractionService {
     void incrementPageViews(Long id);
 
     List<AttractionDTO> getAllAttractions();
+
+
+    List<AttractionDTO> getAllAttractionDetailed();
 }
