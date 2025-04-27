@@ -34,12 +34,23 @@ public class ImageStorage {
     @JsonProperty("uploadUserId")
     private Integer uploadUserId;//上传者id
 
-    private enum image_tyoe{头像,动态,封面};
+
     @Column(name = "image_type")
     @JsonProperty("imageType")
-    private image_tyoe imageType;
+    private Integer imageType;
 
     @Column(name = "upload_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss" )
     private LocalDateTime uploadTime;//上传时间
+
+    @Column(name = "file_size")
+    private Long fileSize;  // 新增文件大小字段（字节）
+
+    @Column(name = "file_type")
+    private String fileType; // 新增文件MIME类型字段
+
+    @Column(name = "original_name")
+    private String originalName; // 新增原始文件名
+
+
 }
