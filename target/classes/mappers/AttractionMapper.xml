@@ -18,6 +18,8 @@
         <result column="attraction_phone" property="attractionPhone" jdbcType="VARCHAR"/>
         <result column="page_views" property="pageViews" jdbcType="INTEGER"/>
         <result column="discount" property="discount" jdbcType="DECIMAL"/>
+        <result column="booking_start_time" property="bookingStartTime" jdbcType="DATE"/>
+        <result column="booking_end_time" property="bookingEndTime" jdbcType="DATE"/>
     </resultMap>
 
     <insert id="insert" parameterType="org.travelsystem.travel.entity.Attraction" useGeneratedKeys="true" keyProperty="attractionId">
@@ -25,12 +27,12 @@
             attraction_name, attraction_rating, attraction_introduction,
             attraction_location, attraction_images, attraction_cover,
             official_guide, attraction_status, business_hours,
-            ticket_price, attraction_phone, page_views, discount
+            ticket_price, attraction_phone, page_views, discount, booking_start_time, booking_end_time
         ) VALUES (
                      #{attractionName}, #{attractionRating}, #{attractionIntroduction},
                      #{attractionLocation}, #{attractionImages}, #{attractionCover},
                      #{officialGuide}, #{attractionStatus}, #{businessHours},
-                     #{ticketPrice}, #{attractionPhone}, #{pageViews}, #{discount}
+                     #{ticketPrice}, #{attractionPhone}, #{pageViews}, #{discount},#{bookingStartTime}, #{bookingEndTime}
                  )
     </insert>
 
@@ -54,10 +56,33 @@
         ticket_price as ticketPrice,
         attraction_phone as attractionPhone,
         page_views as pageViews,
-        discount as discount
+        discount as discount,
+        booking_start_time as bookingStartTime,
+        booking_end_time as bookingEndTime
 
         FROM attraction
     </select>
+
+    <select id="detailed" resultType="org.travelsystem.travel.DTO.AttractionDTO">
+        SELECT
+        attraction_id as attractionId,
+        attraction_name as attractionName,
+        attraction_rating as attractionRating,
+        attraction_introduction as attractionIntroduction,
+        attraction_location as attractionLocation,
+        attraction.business_hours as businessHours,
+        attraction_cover as attractionCover,
+        official_guide as officialGuide,
+        ticket_price as ticketPrice,
+        attraction_phone as attractionPhone,
+        page_views as pageViews,
+        discount as discount,
+        attraction_images as attractionImages,
+        booking_start_time as bookingStartTime,
+        booking_end_time as bookingEndTime
+        FROM attraction
+    </select>
+
 
 
     <delete id="deleteById" parameterType="org.travelsystem.travel.entity.Attraction">
@@ -82,6 +107,8 @@
             <if test="attractionPhone != null">attraction_phone = #{attractionPhone},</if>
             <if test="pageViews != null">page_views = #{pageViews},</if>
             <if test="discount != null">discount = #{discount},</if>
+            <if test="bookingStartTime!= null">booking_start_time = #{bookingStartTime},</if>
+            <if test="bookingEndTime!= null">booking_end_time = #{bookingEndTime},</if>
         </set>
         WHERE attraction_id = #{attractionId}
     </update>

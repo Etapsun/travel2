@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -26,4 +28,7 @@ public class AttractionDTO {
     private String attractionPhone;
     private Integer pageViews=0;
     private BigDecimal discount;
+    private LocalDate bookingStartTime;
+    private LocalDate bookingEndTime;
+
 }

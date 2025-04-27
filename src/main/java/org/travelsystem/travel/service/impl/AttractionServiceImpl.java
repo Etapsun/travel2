@@ -44,6 +44,8 @@ public class AttractionServiceImpl implements AttractionService {
                 .attractionPhone(attraction.getAttractionPhone())
                 .pageViews(attraction.getPageViews())
                 .discount(attraction.getDiscount()!= null? attraction.getDiscount() : BigDecimal.ZERO)
+                .bookingStartTime(attraction.getBookingStartTime())
+                .bookingEndTime(attraction.getBookingEndTime())
                 // 其他字段映射...
                 .build();
     }
@@ -100,6 +102,8 @@ public class AttractionServiceImpl implements AttractionService {
                             .ticketPrice(attraction.getTicketPrice()!= null? attraction.getTicketPrice() : BigDecimal.ZERO)
                             .attractionPhone(attraction.getAttractionPhone())
                             .pageViews(attraction.getPageViews())
+                            .bookingEndTime(attraction.getBookingEndTime())
+                            .bookingStartTime(attraction.getBookingStartTime())
                             .discount(attraction.getDiscount()!= null? attraction.getDiscount() : BigDecimal.ZERO)
                             // 其他字段添加类似空值处理...
                             .build();
@@ -188,6 +192,8 @@ public class AttractionServiceImpl implements AttractionService {
                 .attractionPhone(attraction.getAttractionPhone() != null ? attraction.getAttractionPhone() : "")
                 .pageViews(attraction.getPageViews())
                 .discount(attraction.getDiscount()!= null? attraction.getDiscount() : BigDecimal.ZERO)
+                .bookingStartTime(attraction.getBookingStartTime())
+                .bookingEndTime(attraction.getBookingEndTime())
                 .build();
     }
 
@@ -218,6 +224,8 @@ public class AttractionServiceImpl implements AttractionService {
                 .attractionPhone(dto.getAttractionPhone())
                 .pageViews(Optional.ofNullable(dto.getPageViews()).orElse(0))
                 .discount(dto.getDiscount())
+                .bookingStartTime(dto.getBookingStartTime())
+                .bookingEndTime(dto.getBookingEndTime())
                 .build();
     }
 
@@ -235,6 +243,8 @@ public class AttractionServiceImpl implements AttractionService {
                 .ticketPrice(dto.getTicketPrice() != null ? dto.getTicketPrice() : existing.getTicketPrice())
                 .attractionPhone(dto.getAttractionPhone() != null ? dto.getAttractionPhone() : existing.getAttractionPhone())
                 .discount(dto.getDiscount() != null ? dto.getDiscount() : existing.getDiscount())
+                .bookingStartTime(dto.getBookingStartTime()!= null? dto.getBookingStartTime() : existing.getBookingStartTime())
+                .bookingEndTime(dto.getBookingEndTime()!= null? dto.getBookingEndTime() : existing.getBookingEndTime())
                 .build();
     }
 }

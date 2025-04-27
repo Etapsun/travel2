@@ -15,6 +15,8 @@ import org.travelsystem.travel.service.AttractionService;
 import org.travelsystem.travel.service.impl.ResourceNotFoundException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +109,9 @@ public class AttractionController {
             @RequestParam(required = false) BigDecimal ticketPrice,
             @RequestParam(required = false) String attractionPhone,
             @RequestParam(required = false) BigDecimal discount,
-            @RequestParam(required = false) @PositiveOrZero Integer pageViews
+            @RequestParam(required = false) @PositiveOrZero Integer pageViews,
+            @RequestParam(required = false) LocalDate bookingStartTime,
+            @RequestParam(required = false) LocalDate bookingEndTime
             ){
 
 
@@ -124,6 +128,8 @@ public class AttractionController {
                 .ticketPrice(ticketPrice)
                 .attractionPhone(attractionPhone)
                 .discount(discount)
+                .bookingStartTime(bookingStartTime)
+                .bookingEndTime(bookingEndTime)
                 .build();
 
         return ResponseEntity.ok(attractionService.createAttraction(dto));
@@ -145,7 +151,9 @@ public class AttractionController {
             @RequestParam(required = false) String businessHours,
             @RequestParam(required = false) BigDecimal ticketPrice,
             @RequestParam(required = false) BigDecimal discount,
-            @RequestParam(required = false) String attractionPhone
+            @RequestParam(required = false) String attractionPhone,
+            @RequestParam(required = false) LocalDate bookingStartTime,
+            @RequestParam(required = false) LocalDate bookingEndTime
     ) {
         // 构建DTO并调用service
         AttractionDTO dto = AttractionDTO.builder()
@@ -162,6 +170,8 @@ public class AttractionController {
                 .ticketPrice(ticketPrice)
                 .attractionPhone(attractionPhone)
                 .discount(discount)
+                .bookingStartTime(bookingStartTime)
+                .bookingEndTime(bookingEndTime)
                 .build();
         return ResponseEntity.ok(attractionService.updateAttraction(dto));
     }

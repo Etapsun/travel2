@@ -1,5 +1,6 @@
 package org.travelsystem.travel.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 /**
@@ -53,9 +56,6 @@ public class Attraction {
 
     private String officialGuide;//景点官方攻略
 
-
-
-
     @JsonProperty("attractionStatus")
     @Column(name = "attraction_status")
     private Integer attractionStatus;//景点状态
@@ -79,4 +79,13 @@ public class Attraction {
     @JsonProperty("attractionPhone")
     @Column(name = "attraction_phone")
     private String attractionPhone;//景点电话
+
+    @Column(name = "booking_start_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDate bookingStartTime;
+
+    @Column(name = "booking_end_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDate bookingEndTime;
+
 }

@@ -54,7 +54,7 @@ public class User1ServiceImpl implements User1Service {
         // 创建用户对象时设置新字段
         User1 newUser = new User1();
         newUser.setPhone(dto.getPhone());
-        newUser.setPassword(dto.getPassword()); // 实际项目仍需加密
+        newUser.setPassword(dto.getPassword());
         newUser.setNickname(dto.getNickname());
         newUser.setAvatar(dto.getAvatar());
         newUser.setGender(dto.getGender());
