@@ -52,5 +52,9 @@ public class ImageStorage {
     @Column(name = "original_name")
     private String originalName; // 新增原始文件名
 
-
+    public static class ImageType {
+        public static final int AVATAR = 1;
+        public static final int DYNAMIC = 2;
+        public static final int COVER = 3;
+    }
 }

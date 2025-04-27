@@ -36,23 +36,7 @@ public class User1Controller {
         return ResponseEntity.ok(user);
     }
 
-    // 微信登录
-    @PostMapping("/login/wechat")
-    public ResponseEntity<?> wechatLogin(@Valid @ModelAttribute WechatLoginDTO dto) {
-        User1 user = userService.wechatLogin(dto.getCode());
-        return ResponseEntity.ok(user); // 直接返回用户信息
-    }
 
-    // 微信扫码注册
-    @PostMapping("/register/wechatScan")
-    public ResponseEntity<?> wechatScanRegister(@Valid @ModelAttribute WechatLoginDTO dto) {
-        User1 user = userService.wechatScanLogin(dto.getCode());
-        return ResponseEntity.ok(Map.of("user", user)); // 返回用户信息替代token
-    }
-
-
-// 更新用户信息
-// 更新用户信息（修复身份验证和参数绑定问题）
 // 更新用户信息
     @PutMapping("/info")
     public ResponseEntity<?> updateInfo(

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository repository;
-    @Qualifier("purchaseOrderMapperImpl")
+    @Qualifier("purchaseOrderMapper")
     private final PurchaseOrderMapper mapper;
 
     @Override

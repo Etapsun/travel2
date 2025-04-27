@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class FileUploadDTO {
     @NotNull
     private MultipartFile file;
-    private String fileType; // [avatar|attraction_cover|attraction_detail|product]
+    private Integer fileType; // [avatar|attraction_cover|attraction_detail|product]
     private Integer userId; // 上传用户ID
 }
 

@@ -17,6 +17,7 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
     </resultMap>
 
     <!-- 根据手机号查询 -->
@@ -25,9 +26,6 @@
     </select>
 
     <!-- 根据微信openid查询 -->
-    <select id="selectByWechatOpenid" resultMap="BaseResultMap">
-        SELECT * FROM user1 WHERE wechat_openid = #{openid}
-    </select>
 
     <select id="selectById" resultMap="BaseResultMap">
         SELECT * FROM user1 WHERE id = #{id}
@@ -37,11 +35,11 @@
         INSERT INTO user1 (
         phone, password, wechat_openid,
         nickname, avatar, gender, birthday,
-        create_time, update_time, email  <!-- 字段间保持单空格分隔 -->
+        create_time, update_time,email,status <!-- 字段间保持单空格分隔 -->
         ) VALUES (
         #{phone}, #{password}, #{wechatOpenid},
         #{nickname}, #{avatar}, #{gender}, #{birthday},
-        #{createTime}, #{updateTime}, #{email}  <!-- 参数对齐字段顺序 -->
+        #{createTime}, #{updateTime}, #{email},#{status}  <!-- 参数对齐字段顺序 -->
         )
     </insert>
 

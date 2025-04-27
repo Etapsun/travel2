@@ -18,10 +18,8 @@ public interface User1Service {
     @Transactional(rollbackFor = Exception.class)
 // 定义一个名为wechatScanLogin的方法，该方法接收一个String类型的参数code
 // 返回值类型为User1，表示该方法返回一个User1对象
-    User1 wechatScanLogin(String code);
 
-    // 微信登录/注册
-    User1 wechatLogin(String code);
+
 
     void updateUserInfo(Long userId, UserInfoDTO dto);
 

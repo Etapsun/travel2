@@ -30,4 +30,5 @@ public class User1 {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private String email;
+    private Integer status;
 }

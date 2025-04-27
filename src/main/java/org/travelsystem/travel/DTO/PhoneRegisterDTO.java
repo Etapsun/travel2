@@ -36,6 +36,8 @@ public class PhoneRegisterDTO {
     @Email(message = "邮箱格式不正确")
     private String email;
 
+    private Integer status;
+
     // 生成getter/setter...
 }
 

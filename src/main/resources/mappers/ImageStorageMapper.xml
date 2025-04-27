@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travelsystem.travel.mapper.ImageStorageMapper">
+    <resultMap id="BaseResultMap" type="org.travelsystem.travel.entity.ImageStorage">
+        <id column="id" property="id"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="upload_user_id" property="uploadUserId"/>
+        <result column="image_type" property="imageType"/>
+        <result column="upload_time" property="uploadTime"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="original_name" property="originalName"/>
+    </resultMap>
+</mapper>
