@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travelsystem.travel.mapper.ReservationMapper">
+
+    <insert id="insertReservation" useGeneratedKeys="true" keyProperty="id" parameterType="org.travelsystem.travel.entity.Reservation">
+        INSERT INTO reservation (user_id, attraction_id, schedule_time, status, create_time)
+        VALUES (#{userId}, #{attractionId}, #{scheduleTime}, #{status}, NOW())
+    </insert>
+
+    <select id="selectByCondition" resultType="org.travelsystem.travel.entity.Reservation">
+        SELECT id, user_id, attraction_id, schedule_time, status, create_time
+        FROM reservation
+        <where>
+            <if test="userId != null">AND user_id = #{userId}</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+    </select>
+</mapper>
