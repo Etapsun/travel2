@@ -59,7 +59,28 @@
         discount as discount,
         booking_start_time as bookingStartTime,
         booking_end_time as bookingEndTime
+        FROM attraction
+    </select>
 
+    <select id="selectAllAttractionDetailed" resultType="org.travelsystem.travel.DTO.AttractionDTO">
+        SELECT
+            attraction_id as attractionId,
+            attraction_name as attractionName,
+            attraction_rating as attractionRating,
+            attraction_introduction as attractionIntroduction,
+            attraction_location as attractionLocation,
+            attraction_images as attractionImages,
+            attraction.business_hours as businessHours,
+            attraction_cover as attractionCover,
+            official_guide as officialGuide,
+            attraction_status as attractionStatus,
+            supplier_id as supplierId,
+            ticket_price as ticketPrice,
+            attraction_phone as attractionPhone,
+            page_views as pageViews,
+            discount as discount,
+            booking_start_time as bookingStartTime,
+            booking_end_time as bookingEndTime
         FROM attraction
     </select>
 

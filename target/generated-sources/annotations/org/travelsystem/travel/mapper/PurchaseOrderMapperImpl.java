@@ -7,7 +7,7 @@ import org.travelsystem.travel.entity.PurchaseOrder;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-27T00:22:07+0800",
+    date = "2025-04-27T19:34:08+0800",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.14 (Microsoft)"
 )
 @Component
