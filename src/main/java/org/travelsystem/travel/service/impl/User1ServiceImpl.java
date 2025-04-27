@@ -12,11 +12,12 @@ import org.travelsystem.travel.DTO.UserInfoDTO;
 import org.travelsystem.travel.entity.User1;
 import org.travelsystem.travel.exception.BusinessException;
 import org.travelsystem.travel.mapper.User1Mapper;
+import org.travelsystem.travel.service.ImageQueryService;
 import org.travelsystem.travel.service.User1Service;
 import org.travelsystem.travel.utils.WechatUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 // UserServiceImpl.java
@@ -124,10 +125,8 @@ public class User1ServiceImpl implements User1Service {
         if (StringUtils.isNotBlank(dto.getNickname())) {
             user.setNickname(dto.getNickname());
         }
-    // 如果传入的头像URL不为空，则更新用户的头像
-        if (StringUtils.isNotBlank(dto.getAvatar())) {
-            user.setAvatar(dto.getAvatar());
-        }
+
+
     // 如果传入的性别不为空且在有效范围内（0到2），则更新用户的性别
         if (dto.getGender() != null && (dto.getGender() >= 0 && dto.getGender() <= 2)) {
             user.setGender(dto.getGender());
@@ -157,6 +156,9 @@ public class User1ServiceImpl implements User1Service {
         if(StringUtils.isNotBlank(dto.getEmail())) {
             user.setEmail(dto.getEmail());
         }
+
+        user.setAvatar(imageQueryService.getUserAvatar(Math.toIntExact(userId)));
+        //System.out.println("!!!!"+imageQueryService.getUserAvatar(Math.toIntExact(userId)));
 
         // 3. 设置更新时间
     // 将当前时间设置为用户的最后更新时间
@@ -232,4 +234,9 @@ public class User1ServiceImpl implements User1Service {
 
         log.info("用户删除成功, ID: {}", userId);
     }
+
+    private final ImageQueryService imageQueryService;
+
+
+
 }

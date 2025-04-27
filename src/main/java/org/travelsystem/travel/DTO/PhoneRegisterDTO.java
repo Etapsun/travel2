@@ -38,6 +38,7 @@ public class PhoneRegisterDTO {
 
     private Integer status;
 
+
     // 生成getter/setter...
 }
 

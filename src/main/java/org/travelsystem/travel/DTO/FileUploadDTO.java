@@ -18,5 +18,6 @@ public class FileUploadDTO {
     private MultipartFile file;
     private Integer fileType; // [avatar|attraction_cover|attraction_detail|product]
     private Integer userId; // 上传用户ID
+    private Integer attractionId; // 景点ID
 }
 

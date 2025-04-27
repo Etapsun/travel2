@@ -52,9 +52,20 @@ public class ImageStorage {
     @Column(name = "original_name")
     private String originalName; // 新增原始文件名
 
+    @Column(name = "attraction_id")
+    private Integer attractionId; // 景点id
+
     public static class ImageType {
         public static final int AVATAR = 1;
         public static final int DYNAMIC = 2;
         public static final int COVER = 3;
+    }
+
+    public static class Type {
+        public static final int USER_AVATAR = 1;      // 用户头像
+        public static final int ATTRACTION_COVER = 2; // 景点封面
+        public static final int ATTRACTION_DETAIL = 3; // 景点详情图
+        public static final int PRODUCT_IMAGE = 4;    // 商品图片
+        // 保持与现有代码中的定义一致
     }
 }

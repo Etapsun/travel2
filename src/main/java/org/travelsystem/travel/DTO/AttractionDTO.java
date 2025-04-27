@@ -30,5 +30,7 @@ public class AttractionDTO {
     private BigDecimal discount;
     private LocalDate bookingStartTime;
     private LocalDate bookingEndTime;
+    private String CoverImage;
+    private String DetailImage;
 
 }

@@ -49,6 +49,7 @@ public class FileServiceImpl implements FileService {
             ImageStorage imageStorage = ImageStorage.builder()
                     .imageUrl(buildFileUrl(directoryPath, storedFilename))
                     .uploadUserId(dto.getUserId())
+                    .attractionId(dto.getAttractionId())
                     .imageType(dto.getFileType())
                     .uploadTime(LocalDateTime.now())
                     .fileSize(dto.getFile().getSize())
@@ -80,13 +81,22 @@ public class FileServiceImpl implements FileService {
     }
 
     private String generateFilePath(FileUploadDTO dto) {
+        // 新增空值校验
+        if (uploadPath == null) {
+            throw new BusinessException("文件存储路径未配置");
+        }
+
         Map<Integer, String> typeMapping = Map.of(
                 1, "avatar",
                 2, "dynamic",
                 3, "cover"
         );
+
+        // 获取类型目录时添加默认值
+        String typeDir = typeMapping.getOrDefault(dto.getFileType(), "unknown");
+
         return Paths.get(uploadPath)
-                .resolve(typeMapping.get(dto.getFileType()))
+                .resolve(typeDir)
                 .resolve(LocalDate.now().toString())
                 .toString();
     }

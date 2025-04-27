@@ -8,8 +8,13 @@ spring:
     password: 220529
   servlet:
     multipart:
+      enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+      location: D:/upload_temp
+logging:
+  level:
+    org.springframework.web: DEBUG
 debug: true
 wechat:
   appid: wx8724a8e884f1d63e
@@ -30,10 +35,9 @@ jwt:
 mybatis:
   mapper-locations: classpath*:mappers/*.xml
   type-aliases-package: org.travelsystem.travel.entity
-#测试，无实例1
 
 file:
   upload:
-    path: E:/homework/java homework/travel/src/main/resources/static/uploads
+    path: D:/upload_temp
     allowed-types: image/jpeg,image/png,image/webp,application/pdf
     max-size: 10MB  #文件上传路径

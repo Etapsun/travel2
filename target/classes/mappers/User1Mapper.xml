@@ -57,7 +57,8 @@
             <if test="gender != null">gender = #{gender},</if>
             <if test="birthday != null">birthday = #{birthday},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>  <!-- 添加逗号 -->
-            <if test="email != null">email = #{email}</if>                  <!-- 添加逗号 -->
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null">status = #{status}</if>-- 添加逗号 -->
         </set>
         WHERE id = #{id}
     </update>

@@ -9,6 +9,7 @@ import org.travelsystem.travel.exception.BusinessException;
 import org.travelsystem.travel.mapper.AttractionMapper;
 import org.travelsystem.travel.respository.AttractionRepository;
 import org.travelsystem.travel.service.AttractionService;
+import org.travelsystem.travel.service.ImageQueryService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -145,8 +146,10 @@ public class AttractionServiceImpl implements AttractionService {
 
         // 使用现有实体作为基础，仅更新DTO中有值的字段
         Attraction attraction = updateEntityFromDTO(existing, dto);
+        attraction.setAttractionImages(imageQueryService.getAttractionCover(Math.toIntExact(dto.getAttractionId())));
+        System.out.println("!!!!!!!!!!"+attraction.getAttractionImages()+"!!!!!!!!!!!!"+dto.getAttractionId());
+        System.out.println("+)))))))"+imageQueryService.getAttractionCover(Math.toIntExact(dto.getAttractionId())));
         attractionMapper.update(attraction);
-
         return convertToDTO(attraction);
     }
 
@@ -247,4 +250,8 @@ public class AttractionServiceImpl implements AttractionService {
                 .bookingEndTime(dto.getBookingEndTime()!= null? dto.getBookingEndTime() : existing.getBookingEndTime())
                 .build();
     }
+
+    private final ImageQueryService imageQueryService;
+
+
 }

@@ -30,4 +30,6 @@ public interface User1Service {
     void bindPhone(Long userId, String phone, String password);
 
     void deleteUser(Long userId);
+
+    //UserInfoDTO getUserWithAvatar(Long userId);
 }

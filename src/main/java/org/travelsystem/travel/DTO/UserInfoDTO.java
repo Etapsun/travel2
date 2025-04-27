@@ -20,4 +20,5 @@ public class UserInfoDTO { // 定义一个名为UserInfoDTO的公共类，用于
     private String phone; // 定义一个私有字符串字段phone，用于存储用户的电话号码
     private String password; // 定义一个私有字符串字段address，用于存储用户的地址
     private Integer status; // 定义一个私有整数字段status，用于存储用户的状态（0：正常，1：禁用）
+   // private String avatarUrl; // 新增头像URL字段
 }

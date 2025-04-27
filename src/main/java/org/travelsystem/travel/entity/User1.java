@@ -22,7 +22,6 @@ public class User1 {
 
     @Column(name = "wechat_openid", unique = true)
     private String wechatOpenid;
-
     private String nickname;
     private String avatar;
     private Integer gender;

@@ -43,6 +43,7 @@ public class User1Controller {
             @Valid @ModelAttribute UserInfoDTO dto,
             @RequestParam Long id) {  // 新增请求参数
         userService.updateUserInfo(id, dto);
+       // userService.getUserWithAvatar(id);
         return ResponseEntity.ok().build();
     }
 
