@@ -80,12 +80,12 @@ public class Attraction {
     @Column(name = "attraction_phone")
     private String attractionPhone;//景点电话
 
-    @Column(name = "booking_start_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name = "booking_start_time",nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate bookingStartTime;
 
-    @Column(name = "booking_end_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name = "booking_end_time", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate bookingEndTime;
 
 }

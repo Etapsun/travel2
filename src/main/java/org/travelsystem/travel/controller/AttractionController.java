@@ -30,7 +30,8 @@ public class AttractionController {
 
 
     /**
-     * 根据ID获取景点信息
+     * 根据ID获取景点信息 只用输入id即可获取景点信息
+     * 主要面向游客
      * @param id 景点ID
      * @return 景点信息
      */
@@ -50,7 +51,9 @@ public class AttractionController {
     }
 
     /**
-     * 根据名称获取景点信息
+     * 根据名称获取景点信息，只需输入名称即可获取景点信息
+     * 主要面向游客
+     * 可以根据名称搜索景点信息
      * @param name 景点名称
      * @return 景点信息
      */
@@ -63,6 +66,8 @@ public class AttractionController {
 
     /**
      * 根据评分范围获取景点信息
+     * 给出最小的评分和最大的评分，即可获取符合评分范围的景点信息
+     * 主要面向游客
      * @param min 最小评分
      * @param max 最大评分
      * @return 景点信息
@@ -93,15 +98,20 @@ public class AttractionController {
     }
 
     /**
-     * 创建景点信息
+     * 创建景点信息，需要输入所有的景点信息
+     * 主要面向管理员
+     * 名称
+     * @param  景点信息
+     * @return 景点信息 (包含ID)    景点创建成功
+     * 必须的有
      */
     @PostMapping("/createAttraction")
     public ResponseEntity<AttractionDTO> createAttractionByParams(
-            @RequestParam String attractionName,
+            @RequestParam @NotNull String attractionName,
             @RequestParam @DecimalMin("0") @DecimalMax("10") BigDecimal attractionRating,
-            @RequestParam(required = false) String attractionIntroduction,
-            @RequestParam(required = false) String attractionLocation,
-            @RequestParam(required = false) String attractionImages,
+            @RequestParam(required = false) @NotNull String attractionIntroduction,
+            @RequestParam(required = false) @NotNull String attractionLocation,
+            @RequestParam(required = false)  String attractionImages,
             @RequestParam(required = false) String attractionCover,
             @RequestParam(required = false) String officialGuide,
             @RequestParam(required = false) Integer attractionStatus,
@@ -110,8 +120,8 @@ public class AttractionController {
             @RequestParam(required = false) String attractionPhone,
             @RequestParam(required = false) BigDecimal discount,
             @RequestParam(required = false) @PositiveOrZero Integer pageViews,
-            @RequestParam(required = false) LocalDate bookingStartTime,
-            @RequestParam(required = false) LocalDate bookingEndTime
+            @RequestParam @NotNull LocalDate bookingStartTime,
+            @RequestParam @NotNull LocalDate bookingEndTime
             ){
 
 
@@ -136,44 +146,44 @@ public class AttractionController {
     }
 
 
-    // 处理PUT请求，更新景点信息
+    // 处理PUT请求，更新景点信息，
     @PutMapping("/updateAttraction/{id}")
     public ResponseEntity<AttractionDTO> updateAttraction(
-            @PathVariable Long id,
-            @RequestParam String attractionName,
-            @RequestParam(required = false) BigDecimal attractionRating,
-            @RequestParam(required = false) String attractionIntroduction,
-            @RequestParam(required = false) String attractionLocation,
-            @RequestParam(required = false) String attractionImages,
-            @RequestParam(required = false) String attractionCover,
-            @RequestParam(required = false) String officialGuide,
-            @RequestParam(required = false) Integer attractionStatus,
-            @RequestParam(required = false) String businessHours,
-            @RequestParam(required = false) BigDecimal ticketPrice,
-            @RequestParam(required = false) BigDecimal discount,
-            @RequestParam(required = false) String attractionPhone,
-            @RequestParam(required = false) LocalDate bookingStartTime,
-            @RequestParam(required = false) LocalDate bookingEndTime
+            @PathVariable Long id, // 从URL路径中获取景点的ID
+            @RequestParam String attractionName, // 获取景点名称
+            @RequestParam(required = false) BigDecimal attractionRating, // 获取景点评分，非必需参数
+            @RequestParam(required = false) String attractionIntroduction, // 获取景点介绍，非必需参数
+            @RequestParam(required = false) String attractionLocation, // 获取景点位置，非必需参数
+            @RequestParam(required = false) String attractionImages, // 获取景点图片，非必需参数
+            @RequestParam(required = false) String attractionCover, // 获取景点封面图片，非必需参数
+            @RequestParam(required = false) String officialGuide, // 获取官方指南，非必需参数
+            @RequestParam(required = false) Integer attractionStatus, // 获取景点状态，非必需参数
+            @RequestParam(required = false) String businessHours, // 获取营业时间，非必需参数
+            @RequestParam(required = false) BigDecimal ticketPrice, // 获取门票价格，非必需参数
+            @RequestParam(required = false) BigDecimal discount, // 获取折扣信息，非必需参数
+            @RequestParam(required = false) String attractionPhone, // 获取景点电话，非必需参数
+            @RequestParam(required = false) LocalDate bookingStartTime, // 获取预订开始时间，非必需参数
+            @RequestParam(required = false) LocalDate bookingEndTime // 获取预订结束时间，非必需参数
     ) {
         // 构建DTO并调用service
-        AttractionDTO dto = AttractionDTO.builder()
-                .attractionId(id)
-                .attractionName(attractionName)
-                .attractionRating(attractionRating)
-                .attractionIntroduction(attractionIntroduction)
-                .attractionLocation(attractionLocation)
-                .attractionImages(attractionImages)
-                .attractionCover(attractionCover)
-                .officialGuide(officialGuide)
-                .attractionStatus(attractionStatus)
-                .businessHours(businessHours)
-                .ticketPrice(ticketPrice)
-                .attractionPhone(attractionPhone)
-                .discount(discount)
-                .bookingStartTime(bookingStartTime)
-                .bookingEndTime(bookingEndTime)
-                .build();
-        return ResponseEntity.ok(attractionService.updateAttraction(dto));
+        AttractionDTO dto = AttractionDTO.builder() // 使用Builder模式构建AttractionDTO对象
+                .attractionId(id) // 设置景点ID
+                .attractionName(attractionName) // 设置景点名称
+                .attractionRating(attractionRating) // 设置景点评分
+                .attractionIntroduction(attractionIntroduction) // 设置景点介绍
+                .attractionLocation(attractionLocation) // 设置景点位置
+                .attractionImages(attractionImages) // 设置景点图片
+                .attractionCover(attractionCover) // 设置景点封面图片
+                .officialGuide(officialGuide) // 设置官方指南
+                .attractionStatus(attractionStatus) // 设置景点状态
+                .businessHours(businessHours) // 设置营业时间
+                .ticketPrice(ticketPrice) // 设置门票价格
+                .attractionPhone(attractionPhone) // 设置景点电话
+                .discount(discount) // 设置折扣信息
+                .bookingStartTime(bookingStartTime) // 设置预订开始时间
+                .bookingEndTime(bookingEndTime) // 设置预订结束时间
+                .build(); // 构建DTO对象
+        return ResponseEntity.ok(attractionService.updateAttraction(dto)); // 调用service更新景点信息，并返回响应实体
     }
 
 
@@ -196,7 +206,7 @@ public class AttractionController {
     }
 
     /**
-     * 获取所有景点信息
+     * 获取所有景点信息，只传数据
      * @return
      */
     @GetMapping("/getAllAttractions")

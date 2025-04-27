@@ -37,7 +37,7 @@
     </insert>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="org.travelsystem.travel.entity.Attraction">
-        SELECT *
+        SELECT *, booking_start_time, booking_end_time
         FROM attraction
         WHERE attraction_id = #{attractionId,jdbcType=BIGINT}
     </select>

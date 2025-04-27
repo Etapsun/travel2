@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ReservationDTO {
     private Long id;
     private Long userId;
-    private Long attractionId;
+    private Long attraction;
     private LocalDate scheduleTime;
     private Integer status;
     private LocalDateTime createTime;

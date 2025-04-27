@@ -8,6 +8,7 @@ import org.travelsystem.travel.DTO.AttractionDTO;
 import org.travelsystem.travel.entity.Attraction;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -31,4 +32,7 @@ public interface AttractionMapper {
     List<AttractionDTO> selectAll();
 
     List<AttractionDTO> selectAllAttractionDetailed();
+
+    LocalDateTime getCreationTimeById(Long id);
+    LocalDateTime getUpdateTimeById(Long id);
 }

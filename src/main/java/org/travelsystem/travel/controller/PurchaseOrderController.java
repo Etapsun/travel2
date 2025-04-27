@@ -14,7 +14,6 @@ import org.travelsystem.travel.service.PurchaseOrderService;
 public class PurchaseOrderController {
 
     private final PurchaseOrderService service;
-
     @PostMapping
     public ResponseEntity<PurchaseOrderDTO> createOrder(@RequestBody PurchaseOrderDTO dto) {
         PurchaseOrderDTO createdOrder = service.createOrder(dto);
