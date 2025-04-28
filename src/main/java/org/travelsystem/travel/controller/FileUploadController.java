@@ -29,7 +29,7 @@ public class FileUploadController {
     public FileResponseDTO uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam("fileType") Integer fileType,
-            @RequestParam(value = "userId", required = false) Integer userId) {
+            @RequestParam("userId") Integer userId) {
 
         FileUploadDTO dto = FileUploadDTO.builder()
                 .file(file)
@@ -51,7 +51,7 @@ public class FileUploadController {
     public FileResponseDTO uploadATFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam("fileType") Integer fileType,
-            @RequestParam(value = "attractionId", required = false) Integer attractionId) {
+            @RequestParam("attractionId") Integer attractionId) {
         FileUploadDTO dto = FileUploadDTO.builder()
                .file(file)
                .fileType(fileType)

@@ -8,7 +8,7 @@ import org.travelsystem.travel.entity.ProductInformation;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-28T18:55:25+0800",
+    date = "2025-04-29T00:57:21+0800",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.14 (Microsoft)"
 )
 @Component
