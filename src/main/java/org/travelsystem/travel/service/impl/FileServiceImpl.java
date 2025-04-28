@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -81,31 +83,13 @@ public class FileServiceImpl implements FileService {
     }
 
     private String generateFilePath(FileUploadDTO dto) {
-        // 新增空值校验
         // 检查文件存储路径是否为空，如果为空则抛出业务异常
         if (uploadPath == null) {
             throw new BusinessException("文件存储路径未配置");
         }
-
-        // 创建一个类型映射的Map，用于将文件类型ID映射到对应的目录名称
-        Map<Integer, String> typeMapping = Map.of(
-                1, "avatar",    // 文件类型ID为1时，对应的目录名称为"avatar"
-                2, "dynamic",   // 文件类型ID为2时，对应的目录名称为"dynamic"
-                3, "cover"      // 文件类型ID为3时，对应的目录名称为"cover"
-        );
-
-        // 获取类型目录时添加默认值
-        // 根据文件类型ID从typeMapping中获取对应的目录名称，如果不存在则默认为"unknown"
-        String typeDir = typeMapping.getOrDefault(dto.getFileType(), "unknown");
-
-        // 构建文件路径
-        // 使用Paths.get()方法获取uploadPath的Path对象
-        // 使用resolve()方法依次添加类型目录和当前日期目录
-        // 最后调用toString()方法将Path对象转换为字符串路径
-        return Paths.get(uploadPath)
-                .resolve(typeDir)
-                .resolve(LocalDate.now().toString())
-                .toString();
+        
+        // 简化逻辑，直接返回上传路径
+        return uploadPath;
     }
 
     private String generateFilename(MultipartFile file) {
@@ -116,20 +100,67 @@ public class FileServiceImpl implements FileService {
     }
 
     private void storeFile(MultipartFile file, String directoryPath, String filename) throws IOException {
-        Path path = Paths.get(directoryPath);
-        if (!Files.exists(path)) {
-            Files.createDirectories(path);
+        // 定义可能的上传路径列表
+        List<String> possiblePaths = new ArrayList<>();
+        possiblePaths.add(uploadPath);
+        possiblePaths.add("src/main/resources/static/uploads");
+        possiblePaths.add("target/classes/static/uploads");
+        
+        System.out.println("尝试将文件保存到多个位置");
+        
+        boolean atLeastOneSaved = false;
+        
+        // 遍历所有可能的路径进行保存
+        for (String path : possiblePaths) {
+            try {
+                // 使用完整的绝对路径确保目录存在
+                Path uploadDir = Paths.get(path).toAbsolutePath();
+                System.out.println("尝试保存到路径: " + uploadDir);
+                
+                if (!Files.exists(uploadDir)) {
+                    try {
+                        Files.createDirectories(uploadDir);
+                        System.out.println("创建上传目录: " + uploadDir);
+                    } catch (IOException e) {
+                        System.err.println("无法创建上传目录: " + e.getMessage());
+                        continue; // 跳过当前路径，尝试下一个
+                    }
+                }
+                
+                // 确保目录存在后，构建文件完整路径
+                Path fileDestination = uploadDir.resolve(filename);
+                System.out.println("文件将保存到: " + fileDestination);
+                
+                try {
+                    // 复制文件到当前路径
+                    Files.copy(file.getInputStream(), fileDestination, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("文件成功保存到: " + fileDestination);
+                    atLeastOneSaved = true;
+                    
+                    // 检查文件是否已创建
+                    if (Files.exists(fileDestination)) {
+                        System.out.println("确认文件已保存，大小: " + Files.size(fileDestination) + " 字节");
+                    } else {
+                        System.err.println("文件保存后检查失败，文件不存在: " + fileDestination);
+                    }
+                } catch (IOException e) {
+                    System.err.println("保存到 " + fileDestination + " 失败: " + e.getMessage());
+                }
+            } catch (Exception e) {
+                System.err.println("处理路径 " + path + " 时出错: " + e.getMessage());
+            }
         }
-        Files.copy(file.getInputStream(), path.resolve(filename),
-                StandardCopyOption.REPLACE_EXISTING);
+        
+        if (!atLeastOneSaved) {
+            throw new BusinessException("无法将文件保存到任何目录");
+        }
     }
 
     private String buildFileUrl(String directoryPath, String filename) {
-        // 修复路径转换逻辑
-        return "/uploads/" + Paths.get(uploadPath)
-                .relativize(Paths.get(directoryPath))  // 修正路径基准点
-                .resolve(filename)
-                .toString().replace("\\", "/");
+        // 构建简单的URL格式，不包含..或其他导航符号
+        String url = "/uploads/" + filename;
+        System.out.println("生成的文件URL: " + url);
+        return url;
     }
 
     private String getTypeName(Integer typeCode) {

@@ -124,13 +124,17 @@ public class AttractionController {
             @RequestParam @NotNull LocalDate bookingEndTime
             ){
 
+        // 清理图片路径
+        String cleanedImagePath = cleanImagePath(attractionImages);
+        System.out.println("创建景点 - 原始图片路径: " + attractionImages);
+        System.out.println("创建景点 - 清理后图片路径: " + cleanedImagePath);
 
         AttractionDTO dto = AttractionDTO.builder()
                 .attractionName(attractionName)
                 .attractionRating(attractionRating)
                 .attractionIntroduction(attractionIntroduction)
                 .attractionLocation(attractionLocation)
-                .attractionImages(attractionImages)
+                .attractionImages(cleanedImagePath)
                 .attractionCover(attractionCover)
                 .officialGuide(officialGuide)
                 .attractionStatus(attractionStatus)
@@ -165,6 +169,11 @@ public class AttractionController {
             @RequestParam(required = false) LocalDate bookingStartTime, // 获取预订开始时间，非必需参数
             @RequestParam(required = false) LocalDate bookingEndTime // 获取预订结束时间，非必需参数
     ) {
+        // 清理图片路径
+        String cleanedImagePath = cleanImagePath(attractionImages);
+        System.out.println("原始图片路径: " + attractionImages);
+        System.out.println("清理后图片路径: " + cleanedImagePath);
+        
         // 构建DTO并调用service
         AttractionDTO dto = AttractionDTO.builder() // 使用Builder模式构建AttractionDTO对象
                 .attractionId(id) // 设置景点ID
@@ -172,7 +181,7 @@ public class AttractionController {
                 .attractionRating(attractionRating) // 设置景点评分
                 .attractionIntroduction(attractionIntroduction) // 设置景点介绍
                 .attractionLocation(attractionLocation) // 设置景点位置
-                .attractionImages(attractionImages) // 设置景点图片
+                .attractionImages(cleanedImagePath) // 设置已清理的景点图片路径
                 .attractionCover(attractionCover) // 设置景点封面图片
                 .officialGuide(officialGuide) // 设置官方指南
                 .attractionStatus(attractionStatus) // 设置景点状态
@@ -186,6 +195,24 @@ public class AttractionController {
         return ResponseEntity.ok(attractionService.updateAttraction(dto)); // 调用service更新景点信息，并返回响应实体
     }
 
+    // 辅助方法：清理图片路径，移除路径中的../
+    private String cleanImagePath(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return imagePath;
+        }
+        
+        // 如果路径包含../../，提取文件名
+        if (imagePath.contains("../")) {
+            // 从路径中提取文件名
+            String[] parts = imagePath.split("/");
+            String fileName = parts[parts.length - 1];
+            
+            // 返回干净的路径
+            return "/uploads/" + fileName;
+        }
+        
+        return imagePath;
+    }
 
     // 处理DELETE请求，根据ID删除景点
         @DeleteMapping("/delete/{id}")
@@ -223,8 +250,35 @@ public class AttractionController {
         return ResponseEntity.ok(attractionService.getAllAttractionDetailed());
     }
 
-
-
+    /**
+     * 获取景点图片（提供直接访问图片的接口）
+     * @param id 景点ID
+     * @return 图片URL
+     */
+    @GetMapping("/{id}/images")
+    public ResponseEntity<?> getAttractionImages(@PathVariable Long id) {
+        try {
+            AttractionDTO attraction = attractionService.getAttractionById(id);
+            if (attraction == null || attraction.getAttractionId() == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("code", 404, "message", "景点不存在"));
+            }
+            
+            // 清理并返回图片路径
+            String cleanImagePath = cleanImagePath(attraction.getAttractionImages());
+            System.out.println("获取景点图片 - 原始路径: " + attraction.getAttractionImages());
+            System.out.println("获取景点图片 - 清理后路径: " + cleanImagePath);
+            
+            // 返回图片路径数据
+            return ResponseEntity.ok(Map.of(
+                "imageUrl", cleanImagePath,
+                "attractionId", id
+            ));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("code", 404, "message", e.getMessage()));
+        }
+    }
 
 }
 
