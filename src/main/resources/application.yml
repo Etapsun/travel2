@@ -5,23 +5,36 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/database_analysis_and_design?useUnicode=true&characterEncoding=utf-8&useSSL=true
     username: root
-    password: 123456
+    password: 220529
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
-      location: src/main/resources/static/uploads
+      location: ${java.io.tmpdir}  # 改为系统临时目录，避免使用源码目录
+  # 新增静态资源配置
+  web:
+    resources:
+      static-locations:
+          classpath:/static/,
+          file:./uploads/dynamic/  # 精确到动态子目录
+  mvc:
+     static-path-pattern: /**
+  favcon:
+     enabled: false
+
 logging:
   level:
     org.springframework.web: DEBUG
 debug: true
+
 wechat:
-  appid: wx8724a8e884f1d63e
+  appid: wx8724e884f1d63e
   secret: e7913ed68d23112a3cf73c739de70633
+
 jwt:
-  secret: your-secret-key-12345  # 添加JWT签名密钥
-  expiration: 86400000          # Token有效期（24小时）
+  secret: your-secret-key-12345
+  expiration: 86400000
 
   jpa:
     hibernate:
@@ -38,6 +51,6 @@ mybatis:
 
 file:
   upload:
-    path: src/main/resources/static/uploads/
+    path: uploads # 改为项目相对路径（非源码目录）
     allowed-types: image/jpeg,image/png,image/webp,application/pdf
-    max-size: 10MB  #文件上传路径
+    max-size: 10MB

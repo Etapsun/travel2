@@ -55,6 +55,12 @@ public class ImageStorage {
     @Column(name = "attraction_id")
     private Integer attractionId; // 景点id
 
+    public LocalDateTime getCreatedAt() {
+        return uploadTime;
+    }
+
+
+
     public static class ImageType {
         public static final int AVATAR = 1;
         public static final int DYNAMIC = 2;

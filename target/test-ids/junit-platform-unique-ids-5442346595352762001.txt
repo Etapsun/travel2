@@ -1,0 +1,1 @@
+[engine:junit-jupiter]/[class:org.travelsystem.travel.TravelApplicationTests]/[method:contextLoads()]

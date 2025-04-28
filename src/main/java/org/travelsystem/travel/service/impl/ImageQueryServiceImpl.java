@@ -24,6 +24,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
                 userId
         );
         // 如果图片列表为空，返回null；否则返回第一张图片的URL
+        images.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
         return images.get(0).getImageUrl();
     }
 
@@ -35,7 +36,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
                 ImageStorage.Type.ATTRACTION_COVER,
                 Math.toIntExact(attractionId)
         );
-        // 如果图片列表为空，返回null；否则返回第一张图片的URL
+        images.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
         return images.get(0).getImageUrl();
     }
 
