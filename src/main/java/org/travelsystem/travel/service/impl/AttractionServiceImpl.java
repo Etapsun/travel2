@@ -146,9 +146,10 @@ public class AttractionServiceImpl implements AttractionService {
 
         // 使用现有实体作为基础，仅更新DTO中有值的字段
         Attraction attraction = updateEntityFromDTO(existing, dto);
-        attraction.setAttractionImages(imageQueryService.getAttractionCover(Math.toIntExact(dto.getAttractionId())));
-        System.out.println("!!!!!!!!!!"+attraction.getAttractionImages()+"!!!!!!!!!!!!"+dto.getAttractionId());
-        System.out.println("+)))))))"+imageQueryService.getAttractionCover(Math.toIntExact(dto.getAttractionId())));
+        
+        // 保留控制器传入的清理后的图片路径
+        System.out.println("使用清理后的图片路径: " + dto.getAttractionImages());
+        
         attractionMapper.update(attraction);
         return convertToDTO(attraction);
     }
