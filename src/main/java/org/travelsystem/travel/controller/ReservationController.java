@@ -54,8 +54,7 @@ public class ReservationController {
      * 通过景点id获取预约用户列表
      * 主要面向村民
      * @param attraction 景点ID
-     * @param status 预约状态
-     * @return
+     * @param status 预约状态     * @return
      */
     @GetMapping("/attraction/{attraction}")
     public ResponseEntity<List<ReservationDTO>> getByAttraction(

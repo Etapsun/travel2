@@ -82,19 +82,26 @@ public class FileServiceImpl implements FileService {
 
     private String generateFilePath(FileUploadDTO dto) {
         // 新增空值校验
+        // 检查文件存储路径是否为空，如果为空则抛出业务异常
         if (uploadPath == null) {
             throw new BusinessException("文件存储路径未配置");
         }
 
+        // 创建一个类型映射的Map，用于将文件类型ID映射到对应的目录名称
         Map<Integer, String> typeMapping = Map.of(
-                1, "avatar",
-                2, "dynamic",
-                3, "cover"
+                1, "avatar",    // 文件类型ID为1时，对应的目录名称为"avatar"
+                2, "dynamic",   // 文件类型ID为2时，对应的目录名称为"dynamic"
+                3, "cover"      // 文件类型ID为3时，对应的目录名称为"cover"
         );
 
         // 获取类型目录时添加默认值
+        // 根据文件类型ID从typeMapping中获取对应的目录名称，如果不存在则默认为"unknown"
         String typeDir = typeMapping.getOrDefault(dto.getFileType(), "unknown");
 
+        // 构建文件路径
+        // 使用Paths.get()方法获取uploadPath的Path对象
+        // 使用resolve()方法依次添加类型目录和当前日期目录
+        // 最后调用toString()方法将Path对象转换为字符串路径
         return Paths.get(uploadPath)
                 .resolve(typeDir)
                 .resolve(LocalDate.now().toString())
@@ -118,9 +125,9 @@ public class FileServiceImpl implements FileService {
     }
 
     private String buildFileUrl(String directoryPath, String filename) {
-        // 示例：将物理路径转换为访问URL（根据实际部署环境调整）
-        return "/uploads/" + Paths.get(directoryPath)
-                .relativize(Paths.get(uploadPath))
+        // 修复路径转换逻辑
+        return "/uploads/" + Paths.get(uploadPath)
+                .relativize(Paths.get(directoryPath))  // 修正路径基准点
                 .resolve(filename)
                 .toString().replace("\\", "/");
     }

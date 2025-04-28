@@ -39,6 +39,13 @@ public class FileUploadController {
         return fileService.uploadFile(dto);
     }
 
+    /**
+     *上传景点图片
+     * @param file 要上传的文件
+     * @param fileType 文件类型
+     * @param attractionId 景点ID（可选）
+     * @return
+     */
     @PostMapping("/attraction")
     @ResponseStatus(HttpStatus.CREATED)
     public FileResponseDTO uploadATFile(
